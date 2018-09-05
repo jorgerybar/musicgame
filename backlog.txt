@@ -1,0 +1,5 @@
+-generate random notes
+-if tap when note on line, then disappear and update score
+-let user record notes to a song
+-let user play from recorded track
+-let two users compete simultaneuosly. 
