@@ -53,7 +53,7 @@ class Board {
       ctx.fillText(time.toFixed(2),100,100)
   
       //Draw Hitbar
-      ctx.drawImage(this.hitBar,0,400,this.width,100) 
+      ctx.drawImage(this.hitBar,300,400,this.width/2,100) 
 
 
       //SHOW MODE
@@ -70,7 +70,7 @@ class Note{
   constructor(frame){
       this.frame = frame
       this.wasHit = null;
-      this.x = 200
+      this.x = 500
       this.y = 0
       this.width = 40
       this.height = 30
