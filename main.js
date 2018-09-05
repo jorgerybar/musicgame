@@ -8,10 +8,11 @@ var frames = 0;
 var interval;
 var notes = []
 var images = {
- note:"./img/note.png",
- noteHit: "./img/noteHit.png"
-  // pipe1:"obstacle_bottom.png",
-  // pipe2: "obstacle_top.png"
+ note:"./img/roundNote.png",
+ noteHit: "./img/noteHit.png",
+ noteMissed: "./img/noteMissed.png",
+ hitBar: "./img/bongo.png",
+ bg: "./img/cuba.jpg"
 
 }
 
@@ -20,27 +21,48 @@ class Board {
   constructor() {
     this.x = 0
     this.y = 0
+    this.mode = "play" //record
     this.width = canvas.width
     this.height = canvas.height
-    // this.image = document.createElement('img')
-    // this.image.src = images.bg
-    // this.image.onload = () => {
-    //   this.draw()
-    // }
+    this.bg = document.createElement('img')
+    this.bg.src = images.bg
+    this.bg.onload = () => {
+      this.draw()
+    }
     this.music = new Audio()
     this.music.src = "./audio/rebelion.mp3"
+    this.hitBar = document.createElement('img')
+    this.hitBar.src = images.hitBar
+    this.hitBar.onload = () => {
+      this.draw()
+    }
   }
   draw() {
-    /*this.x -= .5
-    if(this.x < -this.width ) this.x = 0
-    ctx.drawImage(this.image,this.x,this.y,this.width,this.height)      
-    ctx.drawImage(this.image,this.x + this.width,this.y,this.width,this.height)*/
 
-    //SHOW FRAMES
-    ctx.font = "50px Avenir"
-    ctx.fillStyle = "black"
-    var time = frames/100
-    ctx.fillText(time.toFixed(2),100,100)
+      //Draw BG 
+      //this.x -= .5
+      if(this.x < -this.width ) this.x = 0
+      ctx.drawImage(this.bg,this.x,this.y,this.width,this.height)      
+      ctx.drawImage(this.bg,this.x + this.width,this.y,this.width,this.height)
+      ctx.globalCompositeOperation='source-atop';
+
+      //SHOW FRAMES
+      ctx.font = "50px Avenir"
+      ctx.fillStyle = "white"
+      var time = frames/100
+      ctx.fillText(time.toFixed(2),100,100)
+  
+      //Draw Hitbar
+      ctx.drawImage(this.hitBar,0,400,this.width,100) 
+
+
+      //SHOW MODE
+      ctx.font = "30px Avenir"
+      ctx.fillStyle = "white"
+      var time = frames/100
+      ctx.fillText("Mode: " + this.mode,300,100)
+       
+
 
   }
 }
@@ -64,11 +86,17 @@ class Note{
   draw(){
     if(frames >= this.frame) {
       this.y++;
+      ctx.globalCompositeOperation='destination-over';
       ctx.drawImage(this.image,this.x,this.y,this.width,this.height) 
     }
   }
   hit(){
+    this.wasHit = true;
     this.image.src = images.noteHit
+  }
+  miss(){
+    this.wasHit = false;
+    this.image.src = images.noteMissed
   }
 }
 
@@ -106,23 +134,26 @@ function stop(){
 //HELPER FUNCTIONS(ej. collisions)
 
 function generateNotes(){
-  times = [200,400,600,800,1100]
-  for (t in times) {
-    notes.push(new Note(times[t]))
-  }
+  // times = [200,400,600,800,1100]
+  // for (t in times) {
+  //   notes.push(new Note(times[t]))
+  // }
+  for (i = 0; i <100; i ++)
+      notes.push(new Note(100 + Math.floor(Math.random() * 200*i)))
 }
 function drawNotes(){
   notes.forEach(function(note){
+    if(note.y > 450 && !note.wasHit)
+      note.miss()
       note.draw()
   })
 }
-function playNotes() {} //this will be used in recording mode
+function recordNotes() {} //this will be used in recording mode
 
 function hitNote(){
   notes.forEach(function(note){
-    if(note.y > 300 && note.y <400)
+    if(note.y > 400 && note.y < 500)
      note.hit()
-    // console.log("hit")
 })
 }
 
