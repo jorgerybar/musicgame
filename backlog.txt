@@ -1,5 +1,20 @@
--generate random notes
--if tap when note on line, then disappear and update score
--let user record notes to a song
+DONE - falling notes at specific times
+DONE -if tap when note on line, then disappear
+DONE - generate random notes
+
+BUGS 
+-on Start or Changing Mode, screen goes blank
+-
+
+V1
+-animate background
+-add a cool animation for hitting notes
+-add an accuracy score
+-record beats for La Rebellion
+-add a welcome screen / menu  (Sigame El Ritmo)
+
+V2
+-<IP> let user record notes to a song
 -let user play from recorded track
 -let two users compete simultaneuosly. 
+

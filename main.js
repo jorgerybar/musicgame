@@ -9,9 +9,10 @@ var interval;
 var notes = []
 var images = {
  note:"./img/roundNote.png",
- noteHit: "./img/noteHit.png",
+ noteHit: "./img/plusone.png",
  noteMissed: "./img/noteMissed.png",
- hitBar: "./img/bongo.png",
+ celia0: "./img/celia0.png",
+ celia1: "./img/celia1.png",
  bg: "./img/cuba.jpg"
 
 }
@@ -26,24 +27,18 @@ class Board {
     this.height = canvas.height
     this.bg = document.createElement('img')
     this.bg.src = images.bg
-    this.bg.onload = () => {
-      this.draw()
-    }
+    //this.bg.onload = () => {
+      //this.draw()
+    //}
     this.music = new Audio()
     this.music.src = "./audio/rebelion.mp3"
-    this.hitBar = document.createElement('img')
-    this.hitBar.src = images.hitBar
-    this.hitBar.onload = () => {
-      this.draw()
-    }
+    this.celia = document.createElement('img')
+    this.celia.src = images.celia0
+
   }
   draw() {
-
       //Draw BG 
-      //this.x -= .5
-      if(this.x < -this.width ) this.x = 0
       ctx.drawImage(this.bg,this.x,this.y,this.width,this.height)      
-      ctx.drawImage(this.bg,this.x + this.width,this.y,this.width,this.height)
       ctx.globalCompositeOperation='source-atop';
 
       //SHOW FRAMES
@@ -52,18 +47,14 @@ class Board {
       var time = frames/100
       ctx.fillText(time.toFixed(2),100,100)
   
-      //Draw Hitbar
-      ctx.drawImage(this.hitBar,300,400,this.width/2,100) 
-
+      //Draw Celia
+      ctx.drawImage(this.celia,310,300,300,300) 
 
       //SHOW MODE
       ctx.font = "30px Avenir"
       ctx.fillStyle = "white"
       var time = frames/100
       ctx.fillText("Mode: " + this.mode,300,100)
-       
-
-
   }
 }
 class Note{
@@ -77,15 +68,15 @@ class Note{
       this.gravity = 3
       this.image = new Image()
       this.image.src = images.note
-      this.image.onload = () => {
-          this.draw()
-      }
       //this.music = new Audio()
       //this.musci.src = "Crash.mp3"
   }
   draw(){
     if(frames >= this.frame) {
-      this.y++;
+      if(!this.wasHit)
+        this.y++;
+      else 
+        this.x++;
       ctx.globalCompositeOperation='destination-over';
       ctx.drawImage(this.image,this.x,this.y,this.width,this.height) 
     }
@@ -101,8 +92,6 @@ class Note{
 }
 
 //INSTANCES
-// var song = new Audio()
-// song.src="./audio/rebelion.mp3"
 var board = new Board();
 
 //MAIN FUNCTIONS: update, start 
@@ -110,14 +99,23 @@ function start() {
   console.log("started")
   if(interval) return
   interval = setInterval(update, 1000/100)
-  generateNotes()
   board.music.play()
+  switch (board.mode) {
+    case "play": 
+      generateNotes()
+      break;
+    // case "record":
+    //   break;
+
+  }
+
   //window.clearInterval(interval)
 }
 function update(){
   ctx.clearRect(0,0,canvas.width,canvas.height)
   frames++;
-  drawNotes()
+  if(board.mode === "play")
+    drawNotes()
   board.draw()
 }
 function stop(){
@@ -145,12 +143,16 @@ function drawNotes(){
   notes.forEach(function(note){
     if(note.y > 450 && !note.wasHit)
       note.miss()
-      note.draw()
+    note.draw()
   })
 }
-function recordNotes() {} //this will be used in recording mode
+function recordNotes() {
+  notes.push(new Note(frames));
+  console.log(notes);
+  //trigger some animation
+} 
 
-function hitNote(){
+function hitNotes(){
   notes.forEach(function(note){
     if(note.y > 400 && note.y < 500)
      note.hit()
@@ -158,19 +160,39 @@ function hitNote(){
 }
 
 //EVENT LISTENERS
+window.onload = () => {
+  console.log("loaded")
+  start()
+}
 
 addEventListener('keydown', function(e){
     console.log(e.key)
    if(e.key === "Enter"){
-       start()
+       //start()
    }
    if(e.key === "q"){
     stop()
     }
 
+    // if(e.key === "r"){
+    //   board.mode = "record"
+    //   stop()
+    //   start()
+    //   }
+
   if(e.code === "Space"){
-    console.log("Space")
-    hitNote()
+    switch (board.mode) {
+      case "play": 
+        board.celia.src = images.celia1;
+        setTimeout(()=>{
+          board.celia.src = images.celia0;
+        }, 200)
+        hitNotes();
+        break;
+      // case "record":
+      //   recordNotes();
+      //   break;
+    }
   }
 
   })
