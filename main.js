@@ -113,7 +113,7 @@ function start() {
   console.log("started")
   if(interval) return
   interval = setInterval(update, 1000/100)
-  board.music.play()
+ // board.music.play()
   switch (board.mode) {
     case "play": 
       generateNotes()
@@ -180,13 +180,14 @@ function hitNotes(){
 //EVENT LISTENERS
 window.onload = () => {
   console.log("loaded")
-  start()
+  //start()
 }
 
 addEventListener('keyup', function(e){
     console.log(e.key)
    if(e.key === "Enter"){
-       //start()
+    board.music.play()
+       start()
    }
    if(e.key === "q"){
     stop()
