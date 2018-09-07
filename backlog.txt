@@ -1,17 +1,22 @@
-DONE - falling notes at specific times
-DONE -if tap when note on line, then disappear
-DONE - generate random notes
-
 BUGS 
 -on Start or Changing Mode, screen goes blank
--
+-URGENT: Music doesn't play sometimes 
+-------------------------------------------
+
+V0
+-DONE - falling notes at specific times
+-DONE -if tap when note on line, then disappear
+-DONE - generate random notes
 
 V1
 -animate background
--add a cool animation for hitting notes
--add an accuracy score
+-DONE - add a cool animation for hitting notes
+-DONE - add an accuracy score
+-DONE - make a nice navbar
 -record beats for La Rebellion
 -add a welcome screen / menu  (Sigame El Ritmo)
+-add a win / lose condition
+-animate celia when waiting 
 
 V2
 -<IP> let user record notes to a song

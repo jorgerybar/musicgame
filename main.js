@@ -23,6 +23,8 @@ class Board {
     this.x = 0
     this.y = 0
     this.mode = "play" //record
+    this.score = 0;
+    this.total = 0;
     this.width = canvas.width
     this.height = canvas.height
     this.bg = document.createElement('img')
@@ -40,21 +42,32 @@ class Board {
       //Draw BG 
       ctx.drawImage(this.bg,this.x,this.y,this.width,this.height)      
       ctx.globalCompositeOperation='source-atop';
-
-      //SHOW FRAMES
-      ctx.font = "50px Avenir"
-      ctx.fillStyle = "white"
-      var time = frames/100
-      ctx.fillText(time.toFixed(2),100,100)
   
       //Draw Celia
-      ctx.drawImage(this.celia,310,300,300,300) 
+      ctx.drawImage(this.celia,310,230,300,300) 
 
-      //SHOW MODE
-      ctx.font = "30px Avenir"
+      //Draw Nav
+      ctx.globalAlpha = 0.8
+      ctx.fillStyle = "orange"
+      ctx.fillRect(0,0,this.width, 60)
+      ctx.globalAlpha = 1
+
+      //Draw Time
+      ctx.font = "30px Cinzel"
       ctx.fillStyle = "white"
       var time = frames/100
-      ctx.fillText("Mode: " + this.mode,300,100)
+      ctx.fillText(time.toFixed(2),100,40)
+
+      //Draw Mode
+      ctx.font = "30px Cinzel"
+      ctx.fillStyle = "white"
+      var time = frames/100
+      ctx.fillText("Mode: " + this.mode,300,40)
+
+      //Draw Score
+      ctx.font = "30px Cinzel"
+      ctx.fillStyle = "white"
+      ctx.fillText("Points: " + this.score + "/" + this.total ,this.width-250,40)
   }
 }
 class Note{
@@ -84,6 +97,7 @@ class Note{
   hit(){
     this.wasHit = true;
     this.image.src = images.noteHit
+    board.score++;
   }
   miss(){
     this.wasHit = false;
@@ -140,11 +154,15 @@ function generateNotes(){
       notes.push(new Note(100 + Math.floor(Math.random() * 200*i)))
 }
 function drawNotes(){
+  var total = 0; 
   notes.forEach(function(note){
-    if(note.y > 450 && !note.wasHit)
+    if(note.y > 370 && !note.wasHit)
       note.miss()
+    if(note.wasHit != null)
+      total++;
     note.draw()
   })
+  board.total = total;
 }
 function recordNotes() {
   notes.push(new Note(frames));
@@ -154,7 +172,7 @@ function recordNotes() {
 
 function hitNotes(){
   notes.forEach(function(note){
-    if(note.y > 400 && note.y < 500)
+    if(note.y > 350 && note.y < 370 && !note.wasHit)
      note.hit()
 })
 }
@@ -165,7 +183,7 @@ window.onload = () => {
   start()
 }
 
-addEventListener('keydown', function(e){
+addEventListener('keyup', function(e){
     console.log(e.key)
    if(e.key === "Enter"){
        //start()
@@ -187,7 +205,7 @@ addEventListener('keydown', function(e){
         setTimeout(()=>{
           board.celia.src = images.celia0;
         }, 200)
-        hitNotes();
+         hitNotes();
         break;
       // case "record":
       //   recordNotes();
