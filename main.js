@@ -18,6 +18,13 @@ var images = {
 }
 
 //CLASSES
+class Celia {
+  constructor(){
+    this.x = 310;
+  }
+
+}
+
 class Board {
   constructor() {
     this.x = 0
@@ -44,7 +51,7 @@ class Board {
       ctx.globalCompositeOperation='source-atop';
   
       //Draw Celia
-      ctx.drawImage(this.celia,310,230,300,300) 
+      ctx.drawImage(this.celia,CeliaPos.x,230,300,300) 
 
       //Draw Nav
       ctx.globalAlpha = 0.8
@@ -106,6 +113,7 @@ class Note{
 }
 
 //INSTANCES
+var CeliaPos = new Celia();
 var board = new Board();
 
 //MAIN FUNCTIONS: update, start 
@@ -172,7 +180,11 @@ function recordNotes() {
 
 function hitNotes(){
   notes.forEach(function(note){
-    if(note.y > 350 && note.y < 370 && !note.wasHit)
+    if(note.y > 350 && 
+      note.y < 370 && 
+      CeliaPos.x + 200 > note.x &&
+      CeliaPos.x + 150 < note.x &&
+      !note.wasHit)
      note.hit()
 })
 }
@@ -183,6 +195,18 @@ window.onload = () => {
   //start()
 }
 
+addEventListener('keydown',(e)=>{
+  if(e.key === "ArrowLeft"){
+    CeliaPos.x-=5;
+  }
+  
+  if(e.key === "ArrowRight"){
+    CeliaPos.x+=5;
+  }
+
+})
+
+
 addEventListener('keyup', function(e){
     console.log(e.key)
    if(e.key === "Enter"){
@@ -192,7 +216,9 @@ addEventListener('keyup', function(e){
    if(e.key === "q"){
     stop()
     }
+  
 
+  
     // if(e.key === "r"){
     //   board.mode = "record"
     //   stop()
