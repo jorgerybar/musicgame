@@ -21,6 +21,8 @@ var images = {
 class Celia {
   constructor(){
     this.x = 310;
+    this.speed = 0;
+    this.pressed = false
   }
 
 }
@@ -78,10 +80,10 @@ class Board {
   }
 }
 class Note{
-  constructor(frame){
+  constructor(frame, x){
       this.frame = frame
       this.wasHit = null;
-      this.x = 500
+      this.x = x
       this.y = 0
       this.width = 40
       this.height = 30
@@ -136,6 +138,10 @@ function start() {
 function update(){
   ctx.clearRect(0,0,canvas.width,canvas.height)
   frames++;
+  //if((CeliaPos.speed>1 ||CeliaPos.speed<-1))
+  if(!CeliaPos.pressed) 
+    CeliaPos.speed*=0.9
+  CeliaPos.x+=CeliaPos.speed; 
   if(board.mode === "play")
     drawNotes()
   board.draw()
@@ -159,7 +165,7 @@ function generateNotes(){
   //   notes.push(new Note(times[t]))
   // }
   for (i = 0; i <100; i ++)
-      notes.push(new Note(100 + Math.floor(Math.random() * 200*i)))
+      notes.push(new Note((100 + Math.floor(Math.random() * 200*i)),200+Math.random()*600))
 }
 function drawNotes(){
   var total = 0; 
@@ -197,11 +203,16 @@ window.onload = () => {
 
 addEventListener('keydown',(e)=>{
   if(e.key === "ArrowLeft"){
-    CeliaPos.x-=5;
+    CeliaPos.speed-=2;
+    CeliaPos.x+=CeliaPos.speed;
+    CeliaPos.pressed = true
   }
   
   if(e.key === "ArrowRight"){
-    CeliaPos.x+=5;
+    CeliaPos.speed+=2;
+    CeliaPos.x+=CeliaPos.speed;
+    CeliaPos.pressed = true
+
   }
 
 })
@@ -217,6 +228,10 @@ addEventListener('keyup', function(e){
     stop()
     }
   
+    if(e.key === "ArrowLeft" || e.key === "ArrowRight"){
+      CeliaPos.pressed=false
+      console.log("not pressed")
+    }
 
   
     // if(e.key === "r"){
