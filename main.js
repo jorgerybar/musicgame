@@ -68,10 +68,15 @@ class Board {
       ctx.fillText(time.toFixed(2),100,40)
 
       //Draw Mode
+      // ctx.font = "30px Cinzel"
+      // ctx.fillStyle = "white"
+      // var time = frames/100
+      // ctx.fillText("Mode: " + this.mode,300,40)
+
+      //Draw Mode
       ctx.font = "30px Cinzel"
       ctx.fillStyle = "white"
-      var time = frames/100
-      ctx.fillText("Mode: " + this.mode,300,40)
+      ctx.fillText("Speed: " + CeliaPos.speed.toFixed(2),300,40)
 
       //Draw Score
       ctx.font = "30px Cinzel"
@@ -140,7 +145,7 @@ function update(){
   frames++;
   //if((CeliaPos.speed>1 ||CeliaPos.speed<-1))
   if(!CeliaPos.pressed) 
-    CeliaPos.speed*=0.9
+    CeliaPos.speed*=0.85
   CeliaPos.x+=CeliaPos.speed; 
   if(board.mode === "play")
     drawNotes()
@@ -164,8 +169,8 @@ function generateNotes(){
   // for (t in times) {
   //   notes.push(new Note(times[t]))
   // }
-  for (i = 0; i <100; i ++)
-      notes.push(new Note((100 + Math.floor(Math.random() * 200*i)),200+Math.random()*600))
+  for (i = 0; i <300; i ++)
+      notes.push(new Note((100 + Math.floor(Math.random() * 200 + (200-i/3)*i)),200+Math.random()*600))
 }
 function drawNotes(){
   var total = 0; 
@@ -186,10 +191,10 @@ function recordNotes() {
 
 function hitNotes(){
   notes.forEach(function(note){
-    if(note.y > 350 && 
-      note.y < 370 && 
-      CeliaPos.x + 200 > note.x &&
-      CeliaPos.x + 150 < note.x &&
+    if(note.y > 340 && 
+      note.y < 380 && 
+      note.x < CeliaPos.x + 180  &&
+      note.x > CeliaPos.x  &&
       !note.wasHit)
      note.hit()
 })
@@ -203,13 +208,26 @@ window.onload = () => {
 
 addEventListener('keydown',(e)=>{
   if(e.key === "ArrowLeft"){
-    CeliaPos.speed-=2;
+    if(CeliaPos.speed>-3)
+      CeliaPos.speed=-3;
+    else if (CeliaPos.speed>-5)
+      CeliaPos.speed-=2;
     CeliaPos.x+=CeliaPos.speed;
     CeliaPos.pressed = true
+    if((frames / 7) % 2 < 1){
+      board.celia.src = images.celia1;
+      hitNotes()
+    }
+    else  
+      board.celia.src = images.celia0;
+
   }
   
   if(e.key === "ArrowRight"){
-    CeliaPos.speed+=2;
+    if(CeliaPos.speed<3)
+      CeliaPos.speed=3;
+    else if (CeliaPos.speed<5)
+      CeliaPos.speed+=2;
     CeliaPos.x+=CeliaPos.speed;
     CeliaPos.pressed = true
 
@@ -230,6 +248,7 @@ addEventListener('keyup', function(e){
   
     if(e.key === "ArrowLeft" || e.key === "ArrowRight"){
       CeliaPos.pressed=false
+      board.celia.src = images.celia0;
       console.log("not pressed")
     }
 
