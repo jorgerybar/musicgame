@@ -10,6 +10,7 @@ var ctx = canvas.getContext('2d')
 
 var frames = 0;
 var interval;
+var welcomeInterval
 var notes = []
 var images = {
  note:"./img/roundNote.png",
@@ -19,6 +20,8 @@ var images = {
  celia1: "./img/celia1.png",
  celia2: "./img/celia2.png",
  celia3: "./img/celia3.png",
+ welcome0: "./img/welcome0.png",
+ welcome1: "./img/welcome1.png",
  bg: "./img/cuba.jpg"
 
 }
@@ -37,6 +40,43 @@ class Celia {
 
 }
 
+let welcomebg =document.createElement('img')
+welcomebg.src =images.welcome0
+
+class Welcome {
+  constructor(){
+    this.flash = false
+    this.x = 0
+    this.y = 0
+    this.width = canvas.width
+    this.height = canvas.height
+    //this.bg = document.createElement('img')
+    //this.bg.src = images.welcome0
+  }
+  
+  draw(){
+   // ctx.drawImage(this.bg,this.x,this.y,this.width,this.height)     
+    ctx.drawImage(welcomebg,this.x,this.y,this.width,this.height)       
+    ctx.globalCompositeOperation='source-atop';
+  }
+  
+  welcomeUpdate(){
+    console.log('updating wleomc')
+    if(!this.flash){
+      //this.bg.src
+      welcomebg.src = images.welcome1
+      this.flash =true
+    }
+    else {
+      //this.bg.src
+      welcomebg.src = images.welcome0
+      this.flash =false
+    }
+    this.draw()
+  }
+
+}
+
 class Board {
   constructor() {
     this.x = 0
@@ -48,14 +88,11 @@ class Board {
     this.height = canvas.height
     this.bg = document.createElement('img')
     this.bg.src = images.bg
-    //this.bg.onload = () => {
-      //this.draw()
-    //}
     this.music = new Audio()
     this.music.src = "./audio/rebelion.mp3"
     this.celia = document.createElement('img')
     this.celia.src = images.celia0
-
+    
   }
   draw() {
       //Draw BG 
@@ -83,21 +120,22 @@ class Board {
       // var time = frames/100
       // ctx.fillText("Mode: " + this.mode,300,40)
 
-      //Draw Mode
-      ctx.font = "30px Cinzel"
-      ctx.fillStyle = "white"
-      ctx.fillText("Speed: " + CeliaPos.speed.toFixed(2),300,40)
+      //Draw Speed
+      // ctx.font = "30px Cinzel"
+      // ctx.fillStyle = "white"
+      // ctx.fillText("Speed: " + CeliaPos.speed.toFixed(2),300,40)
 
       //Draw Score
       ctx.font = "30px Cinzel"
       ctx.fillStyle = "white"
-      ctx.fillText("Points: " + this.score + "/" + this.total ,this.width-250,40)
+      ctx.fillText("Puntos: " + this.score + "/" + this.total ,this.width-250,40)
   }
 }
 class Note{
   constructor(frame, x){
       this.frame = frame
       this.wasHit = null;
+      this.hitDirection = null;
       this.x = x
       this.y = 0
       this.width = 40
@@ -112,14 +150,17 @@ class Note{
     if(frames >= this.frame) {
       if(!this.wasHit)
         this.y++;
+      else if (this.hitDirection === 'left')
+        this.x+=3;
       else 
-        this.x++;
+        this.x-=3;
       ctx.globalCompositeOperation='destination-over';
       ctx.drawImage(this.image,this.x,this.y,this.width,this.height) 
     }
   }
   hit(){
     this.wasHit = true;
+    this.hitDirection = CeliaPos.orientation
     this.image.src = images.noteHit
     board.score++;
   }
@@ -135,6 +176,7 @@ class Note{
 //-------------------------------------
 //-------------------------------------
 
+var welcome = new  Welcome();
 var CeliaPos = new Celia();
 var board = new Board();
 
@@ -144,6 +186,7 @@ var board = new Board();
 //-------------------------------------
 //-------------------------------------
 function start() {
+  board.draw()
   console.log("started")
   if(interval) return
   interval = setInterval(update, 1000/100)
@@ -230,7 +273,10 @@ function hitNotes(){
 
 window.onload = () => {
   console.log("loaded")
-  //start()
+  ctx.clearRect(0,0,canvas.width,canvas.height)
+  welcome.draw()
+  welcomeInterval = setInterval(()=>{welcome.welcomeUpdate()}, 450)
+ // start()
 }
 
 addEventListener('keydown',(e)=>{
@@ -276,6 +322,7 @@ addEventListener('keyup', function(e){
     console.log(e.key)
    if(e.key === "Enter"){
     board.music.play()
+    clearInterval(welcomeInterval)
        start()
    }
    if(e.key === "q"){
@@ -303,6 +350,7 @@ addEventListener('keyup', function(e){
     switch (board.mode) {
       case "play": 
         if(CeliaPos.orientation==='left'){
+          console.log('left butt')
           board.celia.src = images.celia1;
           setTimeout(()=>{
             board.celia.src = images.celia0;

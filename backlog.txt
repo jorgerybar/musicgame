@@ -1,6 +1,7 @@
 BUGS 
--on Start or Changing Mode, screen goes blank
--------------------------------------------
+-Notes look flattened
+-on Start or Changing Mode, screen goes blank temporarily
+
 
 V1
 -DONE - falling notes at specific times
@@ -11,9 +12,13 @@ V2
 -DONE - add a cool animation for hitting notes
 -DONE - add an accuracy score
 -DONE - make a nice navbar
--add a welcome screen / menu  (Sigame El Ritmo)
+-DONE add a welcome screen / menu
+-fix collisions (for right side especially)
+-tune note frequency
+-notes generated on the spot. no huge array
 -animate background
 -add a win / lose condition
+-Playtesting
 
 V3
 -<IP> let user record notes to a song
