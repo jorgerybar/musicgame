@@ -9,10 +9,12 @@ var interval;
 var notes = []
 var images = {
  note:"./img/roundNote.png",
- noteHit: "./img/plusone.png",
+ noteHit: "./img/plusone1.png",
  noteMissed: "./img/noteMissed.png",
  celia0: "./img/celia0.png",
  celia1: "./img/celia1.png",
+ celia2: "./img/celia2.png",
+ celia3: "./img/celia3.png",
  bg: "./img/cuba.jpg"
 
 }
@@ -23,6 +25,7 @@ class Celia {
     this.x = 310;
     this.speed = 0;
     this.pressed = false
+    this.orientation = 'left'
   }
 
 }
@@ -208,6 +211,7 @@ window.onload = () => {
 
 addEventListener('keydown',(e)=>{
   if(e.key === "ArrowLeft"){
+    CeliaPos.orientation='left'
     if(CeliaPos.speed>-3)
       CeliaPos.speed=-3;
     else if (CeliaPos.speed>-5)
@@ -224,12 +228,20 @@ addEventListener('keydown',(e)=>{
   }
   
   if(e.key === "ArrowRight"){
+    CeliaPos.orientation='right'
     if(CeliaPos.speed<3)
       CeliaPos.speed=3;
     else if (CeliaPos.speed<5)
       CeliaPos.speed+=2;
     CeliaPos.x+=CeliaPos.speed;
     CeliaPos.pressed = true
+    if((frames / 7) % 2 < 1){
+      board.celia.src = images.celia3;
+      hitNotes()
+    }
+    else  
+      board.celia.src = images.celia2;
+
 
   }
 
@@ -246,10 +258,14 @@ addEventListener('keyup', function(e){
     stop()
     }
   
-    if(e.key === "ArrowLeft" || e.key === "ArrowRight"){
+    if(e.key === "ArrowLeft" ){
       CeliaPos.pressed=false
       board.celia.src = images.celia0;
-      console.log("not pressed")
+    }
+
+    if( e.key === "ArrowRight"){
+      CeliaPos.pressed=false
+      board.celia.src = images.celia2;
     }
 
   
@@ -262,11 +278,19 @@ addEventListener('keyup', function(e){
   if(e.code === "Space"){
     switch (board.mode) {
       case "play": 
-        board.celia.src = images.celia1;
-        setTimeout(()=>{
-          board.celia.src = images.celia0;
-        }, 200)
-         hitNotes();
+        if(CeliaPos.orientation==='left'){
+          board.celia.src = images.celia1;
+          setTimeout(()=>{
+            board.celia.src = images.celia0;
+          }, 200)}
+        else  {
+          console.log('right butt')
+          board.celia.src = images.celia3;
+          setTimeout(()=>{
+            board.celia.src = images.celia2;
+          }, 200)
+        }
+        hitNotes();
         break;
       // case "record":
       //   recordNotes();
